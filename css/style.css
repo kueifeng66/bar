@@ -1,0 +1,2713 @@
+/* ==========================================================================
+   LITTLE MARY (歡樂小瑪莉) - 1990s Taiwanese Retro Arcade Cabinet Styles
+   Pure CSS: Vintage woodgrain, chrome trims, 7-segment LEDs, incandescent bulbs
+   ========================================================================== */
+
+:root {
+  --cabinet-bg: #1c130d;
+  --cabinet-wood: #2c1a0e;
+  --cabinet-gold: #e5b82c;
+  --cabinet-gold-dark: #8c6209;
+  --cabinet-chrome: #d1d5db;
+  --led-red-on: #ff2222;
+  --led-red-off: #2b0808;
+  --led-red-glow: rgba(255, 34, 34, 0.75);
+  --led-green-on: #22ff55;
+  --led-green-off: #082b0f;
+  --led-green-glow: rgba(34, 255, 85, 0.75);
+  --led-yellow-on: #ffea00;
+  --led-yellow-off: #2b2708;
+  --slot-border: #451a03;
+  --bulb-off: #3d2b1f;
+  --bulb-on: #fff37a;
+  --bulb-glow: rgba(255, 235, 59, 0.95);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+html, body {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: radial-gradient(circle at 50% 30%, #1e1e24 0%, #0a0a0c 100%);
+  color: #f3f4f6;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  overflow-x: hidden;
+}
+
+/* CRT Scanlines Overlay (Optional vintage mode) */
+.crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 3px, 6px 100%;
+  z-index: 9999;
+  opacity: 0.85;
+}
+
+/* Top Navigation Bar / Quick Actions */
+.retro-header-bar {
+  width: 100%;
+  max-width: 920px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.header-left, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.retro-chip {
+  background: #111827;
+  border: 1px solid #374151;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: monospace;
+  color: #f59e0b;
+}
+
+.header-btn {
+  background: #374151;
+  color: #fff;
+  border: 1px solid #4b5563;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.header-btn:hover {
+  background: #4b5563;
+}
+
+/* Main Arcade Cabinet Container */
+.arcade-cabinet {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  background: linear-gradient(145deg, #38200e 0%, #1a0f07 40%, #0d0703 100%);
+  border: 8px solid #8c5d1e;
+  border-radius: 20px;
+  box-shadow: 
+    0 0 0 4px #261608,
+    0 0 0 7px #d4af37,
+    0 15px 40px rgba(0, 0, 0, 0.8),
+    inset 0 0 30px rgba(0, 0, 0, 0.7);
+  padding: 14px 16px;
+  transition: transform 0.05s ease-out;
+}
+
+/* Cabinet Shake Feedback when Coin is inserted */
+.arcade-cabinet.cabinet-shake {
+  animation: cabinet-shake-anim 0.38s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes cabinet-shake-anim {
+  10%, 90% { transform: translate3d(-1px, 2px, 0); }
+  20%, 80% { transform: translate3d(2px, -1px, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 3px, 0); }
+  40%, 60% { transform: translate3d(3px, -2px, 0); }
+}
+
+/* Jackpot Disco Strobe Lighting */
+.arcade-cabinet.jackpot-mode {
+  animation: rainbow-strobe 0.4s infinite alternate;
+}
+
+@keyframes rainbow-strobe {
+  0% { box-shadow: 0 0 35px #ff0055, inset 0 0 25px #ff0055; border-color: #ff0055; }
+  33% { box-shadow: 0 0 35px #00ffcc, inset 0 0 25px #00ffcc; border-color: #00ffcc; }
+  66% { box-shadow: 0 0 35px #ffea00, inset 0 0 25px #ffea00; border-color: #ffea00; }
+  100% { box-shadow: 0 0 35px #a855f7, inset 0 0 25px #a855f7; border-color: #a855f7; }
+}
+
+/* Top Marquee Header & Symmetrical Won / Inserted Displays */
+.cabinet-top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(180deg, #1f1107 0%, #120904 100%);
+  border: 3px solid #b48325;
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+/* Symmetrical Red 7-Segment LED Modules (Top-Left Won & Top-Right Inserted) */
+.top-led-module {
+  background: #000;
+  border: 2px solid #5a3416;
+  border-radius: 8px;
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.95), 0 2px 4px rgba(0, 0, 0, 0.6);
+  min-width: 130px;
+  transition: all 0.2s ease;
+}
+
+.top-led-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #d1d5db;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+.top-led-screen {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.top-led-prefix {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  font-weight: 900;
+  color: #ff3333;
+  opacity: 0.85;
+}
+
+.top-seven-seg {
+  background: #0d0202;
+  border: 1px solid #2b0808;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--led-red-on);
+  text-shadow: 0 0 10px var(--led-red-glow);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.8);
+  min-width: 76px;
+  text-align: right;
+  display: inline-block;
+}
+
+.top-led-module.led-flash .top-seven-seg {
+  animation: top-led-flash-anim 0.38s ease-out;
+}
+
+@keyframes top-led-flash-anim {
+  0% { color: #ffffff; text-shadow: 0 0 20px #ffffff, 0 0 30px #ff4444; transform: scale(1.08); }
+  50% { color: #ff8888; text-shadow: 0 0 14px #ff4444; }
+  100% { color: var(--led-red-on); text-shadow: 0 0 10px var(--led-red-glow); transform: scale(1); }
+}
+
+.top-led-module.jackpot-flash {
+  animation: jackpot-box-flash 0.3s infinite alternate;
+}
+
+@keyframes jackpot-box-flash {
+  from {
+    border-color: #ffd700;
+    box-shadow: 0 0 18px #ffd700, inset 0 0 10px #ffea00;
+  }
+  to {
+    border-color: #ff2222;
+    box-shadow: 0 0 26px #ff2222, inset 0 0 14px #ff0000;
+  }
+}
+
+.marquee-title-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.marquee-crown {
+  font-size: 28px;
+  filter: drop-shadow(0 0 6px #f59e0b);
+  animation: pulse-crown 1.5s infinite alternate;
+}
+
+@keyframes pulse-crown {
+  from { transform: scale(1); }
+  to { transform: scale(1.15) rotate(5deg); }
+}
+
+.title-text-group h1 {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: linear-gradient(180deg, #fff275 0%, #f59e0b 50%, #b45309 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.title-sub {
+  font-size: 11px;
+  color: #fcd34d;
+  letter-spacing: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.top-right-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Metal Coin Insertion Slot Panel */
+.coin-slot-module {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(180deg, #4b5563 0%, #1f2937 40%, #111827 100%);
+  border: 2px solid #9ca3af;
+  border-radius: 8px;
+  padding: 6px 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.7), inset 0 1px 2px #fff;
+}
+
+.coin-lamp-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.lamp-bulb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #166534;
+  border: 1px solid #22c55e;
+  box-shadow: 0 0 2px #22c55e;
+  animation: lamp-blink 1s infinite alternate;
+}
+
+@keyframes lamp-blink {
+  from { background: #22c55e; box-shadow: 0 0 10px #22c55e, 0 0 16px #4ade80; }
+  to { background: #064e3b; box-shadow: 0 0 2px #064e3b; }
+}
+
+.lamp-label {
+  font-size: 9px;
+  font-weight: 800;
+  color: #86efac;
+  letter-spacing: 0.5px;
+}
+
+/* Metal Coin Chute Mouth */
+.metal-coin-slot {
+  position: relative;
+  width: 58px;
+  height: 38px;
+  background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 50%, #4b5563 100%);
+  border: 2px solid #374151;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6);
+  transition: transform 0.1s;
+}
+
+.metal-coin-slot:hover {
+  transform: scale(1.04);
+}
+
+.metal-coin-slot:active {
+  transform: scale(0.96);
+}
+
+.coin-slit {
+  width: 6px;
+  height: 24px;
+  background: #000;
+  border-radius: 3px;
+  border: 1px solid #1f2937;
+  box-shadow: inset 0 2px 4px #000;
+}
+
+.slot-tag {
+  position: absolute;
+  bottom: 1px;
+  font-size: 7px;
+  font-weight: 900;
+  color: #1f2937;
+  letter-spacing: 0.5px;
+}
+
+.btn-quick-coin {
+  background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
+  color: #fff;
+  border: 2px solid #fbbf24;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+  transition: all 0.1s;
+}
+
+.btn-quick-coin:hover {
+  filter: brightness(1.15);
+}
+
+.btn-quick-coin:active {
+  transform: translateY(2px);
+}
+
+.coin-sub-tag {
+  font-size: 9px;
+  color: #fef08a;
+}
+
+/* Flying Coin Animation during Coin Insertion (Authentic 10-dollar Taiwanese coin) */
+.flying-coin-inserted {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: url('../assets/coin10_raw.png') center/cover no-repeat;
+  box-shadow: 0 0 14px rgba(250, 204, 21, 0.8), 0 4px 10px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  z-index: 10000;
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.45s;
+}
+
+/* Draggable coin avatar */
+.dragging-coin-avatar {
+  position: fixed;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: url('../assets/coin10_raw.png') center/cover no-repeat;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 12px #facc15, 0 6px 14px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  z-index: 10000;
+}
+
+/* ==========================================================================
+   24-SLOT LIGHT RING & CENTER MARIO BOARD (7x7 GRID)
+   ========================================================================== */
+
+.playfield-surround {
+  position: relative;
+  background: #0f0804;
+  border: 4px solid #b48325;
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: inset 0 0 20px #000;
+}
+
+.light-ring-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  width: 100%;
+  aspect-ratio: 7 / 6.2;
+}
+
+/* Border Slot Cells (The 24 Light Slots) */
+.slot-cell {
+  position: relative;
+  background: linear-gradient(180deg, #2b180d 0%, #150a04 100%);
+  border: 2px solid #5a3416;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.6);
+  transition: border-color 0.1s, transform 0.1s;
+}
+
+/* Lightbulb rim indicator in each slot */
+.slot-bulb {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #422006;
+  border: 1px solid #78350f;
+  transition: all 0.08s;
+}
+
+.slot-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Enlarge all icons to maximum visibility */
+.slot-icon {
+  font-size: 34px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9)) saturate(1.3);
+  margin: 1px 0;
+}
+
+.slot-mult {
+  font-size: 10px;
+  font-weight: 900;
+  color: #fbbf24;
+  letter-spacing: 0.5px;
+}
+
+.slot-name {
+  font-size: 11px;
+  font-weight: bold;
+  color: #f3f4f6;
+  text-shadow: 0 1px 2px #000;
+}
+
+/* Requirement 7: “77” and “BAR” in red (#E60012) with thick outline */
+.slot-icon.bar {
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #E60012 !important;
+  background: #ffffff;
+  border: 2px solid #111827;
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 1.5px;
+  -webkit-text-stroke: 0.8px #800000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.slot-icon.seven {
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: #E60012 !important;
+  -webkit-text-stroke: 1.5px #ffffff;
+  text-shadow: 0 0 2px #000, 2px 2px 0 #000;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9));
+}
+
+/* Win Effect: when lights stop on 77 or BAR, the red text flashes with a glowing pulse */
+.slot-cell.active-light .slot-icon.bar,
+.slot-cell.active-light .slot-icon.seven {
+  animation: red-win-pulse 0.3s infinite alternate;
+}
+
+@keyframes red-win-pulse {
+  from {
+    color: #E60012;
+    filter: drop-shadow(0 0 8px #ff2222) brightness(1.1);
+  }
+  to {
+    color: #ff3b30;
+    filter: drop-shadow(0 0 20px #ff0000) drop-shadow(0 0 30px #ff5555) brightness(1.35);
+    transform: scale(1.08);
+  }
+}
+
+/* 5. Golden Yellow Star (#FFC107) with darker yellow outline and highlight */
+.slot-icon.star,
+.btn-icon.star,
+.arcade-bet-btn.btn-bet-star .btn-icon {
+  color: #FFC107 !important;
+  fill: #FFC107 !important;
+  -webkit-text-fill-color: #FFC107 !important;
+  -webkit-text-stroke: 1.5px #B45309;
+  text-shadow: 0 0 6px #FFD54F, 0 2px 4px rgba(0, 0, 0, 0.95);
+  filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.8));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.golden-star-svg {
+  display: block;
+  margin: 0 auto;
+  width: 1em;
+  height: 1em;
+  max-width: 100%;
+  max-height: 100%;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 8px rgba(255, 193, 7, 0.7));
+}
+
+.slot-icon.mult-x2,
+.slot-icon.mult-x25,
+.slot-icon.mult-x50 {
+  font-family: Impact, sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.slot-icon.mult-x2 { color: #60a5fa; }
+.slot-icon.mult-x25 { color: #c084fc; }
+.slot-icon.mult-x50 { color: #f43f5e; text-shadow: 0 0 8px #f43f5e; }
+
+.bonus-badge {
+  color: #38bdf8 !important;
+}
+
+/* Active Running Light (Slot currently lit) */
+.slot-cell.active-light {
+  background: linear-gradient(180deg, #fff7ed 0%, #fed7aa 60%, #fdba74 100%);
+  border-color: #f59e0b;
+  box-shadow: 0 0 16px #f59e0b, 0 0 28px rgba(245, 158, 11, 0.8), inset 0 0 8px #fff;
+  transform: scale(1.06);
+  z-index: 20;
+}
+
+.slot-cell.active-light .slot-bulb {
+  background: #ffea00;
+  box-shadow: 0 0 10px #ffea00, 0 0 16px #fff;
+}
+
+.slot-cell.active-light .slot-name {
+  color: #7c2d12;
+}
+
+.slot-cell.active-light .slot-mult {
+  color: #9a3412;
+}
+
+/* Jackpot / BAR Win Flash */
+.slot-cell.jackpot-flash {
+  animation: flash-strobe-cell 0.25s infinite alternate !important;
+}
+
+@keyframes flash-strobe-cell {
+  from {
+    background: #ff0055;
+    border-color: #fff;
+    box-shadow: 0 0 20px #ff0055, 0 0 35px #fff;
+  }
+  to {
+    background: #ffea00;
+    border-color: #fff;
+    box-shadow: 0 0 20px #ffea00, 0 0 35px #fff;
+  }
+}
+
+/* ==========================================================================
+   CENTER PANEL (5x5 GRID AREA: Mario Mascot, LEDs, Double-Up)
+   ========================================================================== */
+
+.center-playfield {
+  grid-area: 2 / 2 / 7 / 7;
+  background: radial-gradient(circle at 50% 45%, #381c0e 0%, #1a0b05 60%, #0d0502 100%);
+  border: 3px solid #78350f;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 10px;
+  position: relative;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+}
+
+/* Decorative Marquee Ticker at Top of Center */
+.marquee-ticker-container {
+  background: #000;
+  border: 2px solid #522709;
+  border-radius: 6px;
+  padding: 5px 10px;
+  text-align: center;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.9);
+}
+
+.marquee-ticker {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  font-weight: 800;
+  color: #facc15;
+  letter-spacing: 1px;
+}
+
+.marquee-ticker.success {
+  color: #4ade80;
+  text-shadow: 0 0 8px #22c55e;
+}
+
+.marquee-ticker.warning {
+  color: #f87171;
+  text-shadow: 0 0 8px #ef4444;
+}
+
+.marquee-ticker.bonus {
+  color: #38bdf8;
+  text-shadow: 0 0 8px #38bdf8;
+}
+
+.marquee-ticker.jackpot {
+  color: #f43f5e;
+  text-shadow: 0 0 12px #f43f5e, 0 0 20px #f59e0b;
+  animation: pulse-ticker 0.4s infinite alternate;
+}
+
+@keyframes pulse-ticker {
+  from { transform: scale(1); }
+  to { transform: scale(1.04); }
+}
+
+/* Middle Section: Mascot Artwork & Double-Up Gamble */
+.center-mid-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+  padding: 6px 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Default IDLE / SPIN: Mascot is prominently shown, Double-Up panel is hidden */
+.center-mid-section:not(.in-double-up-mode) .double-up-panel {
+  display: none !important;
+}
+
+.center-mid-section:not(.in-double-up-mode) .mascot-art-box {
+  display: flex;
+}
+
+/* 2. Active Double-Up Screen: Mascot hides, Big/Small Arena takes the full center stage! */
+.center-mid-section.in-double-up-mode .mascot-art-box {
+  display: none !important;
+}
+
+.center-mid-section.in-double-up-mode .double-up-panel {
+  display: flex !important;
+  width: 100%;
+  max-width: 380px;
+  height: 100%;
+  border-color: #f59e0b;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.6), inset 0 0 12px rgba(245, 158, 11, 0.25);
+  animation: double-up-enter-pop 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes double-up-enter-pop {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Retro Mario Artwork Centerpiece Panel */
+.mascot-art-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+.mario-center-img {
+  max-width: 95%;
+  max-height: calc(100% - 22px);
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 3px solid #b48325;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), 0 0 25px rgba(245, 158, 11, 0.45);
+  display: block;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mario-center-img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.95), 0 0 32px rgba(245, 158, 11, 0.65);
+}
+
+.mascot-subtitle {
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  color: #fde047;
+  letter-spacing: 2px;
+  text-shadow: 0 1px 3px #000, 0 0 8px rgba(245, 158, 11, 0.7);
+  margin-top: 4px;
+}
+
+/* Double-Up (比大小) Gamble Mini-Game Panel */
+.double-up-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(180deg, #180d07 0%, #0c0603 100%);
+  border: 2px solid #5a3212;
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s;
+}
+
+.double-up-panel.active-mode {
+  border-color: #f59e0b;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.5), inset 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+/* 4. Prompt to insert coins when money runs out */
+.lamp-bulb.lamp-prompt-blink {
+  animation: lamp-prompt-anim 0.35s infinite alternate !important;
+}
+
+@keyframes lamp-prompt-anim {
+  from { background: #eab308; box-shadow: 0 0 4px #eab308; }
+  to { background: #facc15; box-shadow: 0 0 16px #facc15, 0 0 24px #fff; }
+}
+
+.metal-coin-slot.slot-prompt-glow {
+  animation: slot-prompt-anim 0.65s infinite alternate !important;
+}
+
+@keyframes slot-prompt-anim {
+  from { border-color: #374151; box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6); }
+  to { border-color: #facc15; box-shadow: 0 0 16px #facc15, inset 0 0 8px #fde047; }
+}
+
+.double-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fbbf24;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+/* Double-Up Giant Digit LED Display */
+.double-digit-box {
+  width: 68px;
+  height: 52px;
+  background: #000;
+  border: 2px solid #371804;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.95);
+  margin-bottom: 6px;
+}
+
+#double-up-digit {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 38px;
+  font-weight: 900;
+  color: var(--led-red-on);
+  text-shadow: 0 0 10px var(--led-red-glow);
+}
+
+#double-up-digit.waiting-flash {
+  animation: waiting-digit 0.6s infinite alternate;
+}
+
+@keyframes waiting-digit {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+#double-up-digit.double-win-flash {
+  color: #22ff55;
+  text-shadow: 0 0 15px #22ff55;
+  animation: win-digit 0.2s 6 alternate;
+}
+
+#double-up-digit.double-lose-flash {
+  color: #666;
+  text-shadow: none;
+}
+
+/* Big / Small Gamble Buttons */
+.double-buttons-row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-gamble {
+  background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+  color: #9ca3af;
+  border: 2px solid #4b5563;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-weight: 900;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.btn-gamble:not(:disabled) {
+  color: #fff;
+  cursor: pointer;
+}
+
+.btn-gamble.btn-small:not(:disabled) {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  border-color: #60a5fa;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.6);
+}
+
+.btn-gamble.btn-big:not(:disabled) {
+  background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
+  border-color: #f87171;
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.6);
+}
+
+.btn-gamble:not(:disabled):hover {
+  filter: brightness(1.15);
+}
+
+.btn-gamble:not(:disabled):active {
+  transform: translateY(2px);
+}
+
+/* Bottom of Center: 7-SEGMENT LED DISPLAYS */
+.center-leds-bar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #000;
+  border: 3px solid #5a3416;
+  border-radius: 8px;
+  padding: 6px 12px;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.95);
+}
+
+.led-meter-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.led-meter-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #9ca3af;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.seven-seg-display {
+  background: #0d0202;
+  border: 1px solid #220808;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--led-red-on);
+  text-shadow: 0 0 8px var(--led-red-glow);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.8);
+  min-width: 90px;
+  text-align: right;
+}
+
+.seven-seg-display.green-seg {
+  background: #020d05;
+  border-color: #08220e;
+  color: var(--led-green-on);
+  text-shadow: 0 0 8px var(--led-green-glow);
+}
+
+.seven-seg-display.yellow-seg {
+  background: #0d0c02;
+  border-color: #221f08;
+  color: var(--led-yellow-on);
+  text-shadow: 0 0 8px var(--led-yellow-off);
+}
+
+/* ==========================================================================
+   BET BUTTONS & START CONSOLE (8 SYMBOLS + 1 START IN 1 ROW = 9 COLUMNS)
+   ========================================================================== */
+
+.bet-console-surround {
+  margin-top: 10px;
+  background: linear-gradient(180deg, #1c1008 0%, #0f0703 100%);
+  border: 3px solid #8c5d1e;
+  border-radius: 12px;
+  padding: 8px 10px;
+  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.1);
+}
+
+.bet-console-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: #fcd34d;
+  font-weight: 800;
+  margin-bottom: 6px;
+  padding: 0 4px;
+}
+
+.red-bar-text {
+  color: #E60012;
+  font-family: Impact, sans-serif;
+  -webkit-text-stroke: 0.5px #fff;
+  letter-spacing: 0.5px;
+}
+
+.red-seven-text {
+  color: #E60012;
+  font-family: Impact, sans-serif;
+  -webkit-text-stroke: 0.5px #fff;
+  letter-spacing: 0.5px;
+}
+
+/* 5. 9 Buttons evenly distributed in one horizontal row */
+.bet-and-start-row {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  align-items: stretch;
+}
+
+.arcade-bet-btn {
+  position: relative;
+  background: linear-gradient(180deg, #2b180d 0%, #170d06 100%);
+  border: 2px solid #5a3416;
+  border-radius: 8px;
+  padding: 6px 2px;
+  min-height: 94px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #3a1c07, 0 4px 6px rgba(0, 0, 0, 0.6);
+  transition: transform 0.06s, box-shadow 0.06s;
+  width: 100%;
+}
+
+.arcade-bet-btn:hover {
+  filter: brightness(1.15);
+}
+
+.arcade-bet-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 #3a1c07, 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.btn-top-mult {
+  font-size: 10px;
+  font-weight: 900;
+  color: #fbbf24;
+}
+
+.btn-icon {
+  font-size: 26px;
+  margin: 2px 0;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+}
+
+/* Red 77 and Red BAR for Bet Button Icons */
+.btn-icon.bar,
+.arcade-bet-btn.btn-bet-bar .btn-icon {
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: #E60012 !important;
+  background: #ffffff;
+  border: 2px solid #000;
+  border-radius: 3px;
+  padding: 0 4px;
+  letter-spacing: 1px;
+  -webkit-text-stroke: 0.6px #800000;
+}
+
+.btn-icon.seven,
+.arcade-bet-btn.btn-bet-seven .btn-icon {
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: #E60012 !important;
+  -webkit-text-stroke: 1.2px #ffffff;
+  text-shadow: 0 0 2px #000, 1px 1px 0 #000;
+}
+
+.btn-label {
+  font-size: 11px;
+  font-weight: bold;
+  color: #e5e7eb;
+}
+
+.btn-bet-counter {
+  margin-top: 3px;
+  background: #000;
+  border: 1px solid #374151;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 900;
+  color: #6b7280;
+  min-width: 22px;
+  text-align: center;
+}
+
+.btn-bet-counter.has-bet {
+  color: #22c55e;
+  border-color: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+}
+
+.btn-shortcut {
+  font-size: 9px;
+  color: #9ca3af;
+  margin-top: 2px;
+  font-family: monospace;
+}
+
+/* 1. START Button: 9th column in single row, distinct arcade crimson color */
+.arcade-start-btn {
+  position: relative;
+  background: linear-gradient(180deg, #dc2626 0%, #b91c1c 45%, #7f1d1d 100%);
+  border: 2px solid #fca5a5;
+  border-radius: 8px;
+  padding: 6px 2px;
+  min-height: 94px;
+  min-width: 0;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #450a0a, 0 4px 8px rgba(0, 0, 0, 0.6);
+  transition: transform 0.06s, box-shadow 0.06s;
+  width: 100%;
+  overflow: hidden;
+}
+
+.start-btn-top {
+  font-size: 11px;
+  font-weight: 900;
+  color: #fef08a;
+  letter-spacing: 1px;
+}
+
+.start-btn-title {
+  font-family: Impact, Arial Black, sans-serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  line-height: 1;
+}
+
+.start-btn-sub {
+  font-size: 10px;
+  font-weight: 800;
+  color: #fee2e2;
+}
+
+.start-btn-shortcut {
+  font-size: 9px;
+  color: #fca5a5;
+  font-family: monospace;
+}
+
+.arcade-start-btn.start-blinking {
+  animation: start-btn-row-blink 0.6s infinite alternate;
+}
+
+@keyframes start-btn-row-blink {
+  from {
+    box-shadow: 0 3px 0 #450a0a, 0 0 10px #ef4444;
+    border-color: #fee2e2;
+    filter: brightness(1);
+  }
+  to {
+    box-shadow: 0 3px 0 #450a0a, 0 0 22px #f87171, 0 0 30px #ef4444;
+    border-color: #ffffff;
+    filter: brightness(1.28);
+  }
+}
+
+.arcade-start-btn:disabled {
+  filter: grayscale(0.85) opacity(0.4);
+  cursor: not-allowed;
+  box-shadow: 0 2px 0 #222;
+  transform: none !important;
+}
+
+.arcade-start-btn:not(:disabled):active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 #450a0a;
+}
+
+/* ==========================================================================
+   CABINET BOTTOM CONTROLS (START, COLLECT, CASH OUT, BET ALL)
+   ========================================================================== */
+
+.action-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  gap: 8px;
+}
+
+.secondary-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-secondary {
+  background: #1f2937;
+  color: #d1d5db;
+  border: 1px solid #4b5563;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.btn-secondary:hover {
+  background: #374151;
+  color: #fff;
+}
+
+.btn-secondary:active {
+  transform: translateY(2px);
+}
+
+.primary-actions,
+.win-decision-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Big Glowing Arcade Pushbuttons */
+.btn-arcade-action {
+  position: relative;
+  border-radius: 50px;
+  padding: 10px 22px;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.6), 0 8px 14px rgba(0, 0, 0, 0.7);
+  transition: all 0.08s;
+  border: 3px solid;
+}
+
+.btn-arcade-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.8);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.6);
+}
+
+.btn-arcade-action:not(:disabled):active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+.btn-collect {
+  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+  color: #fff;
+  border-color: #93c5fd;
+}
+
+.btn-payout {
+  background: linear-gradient(180deg, #eab308 0%, #a16207 100%);
+  color: #fff;
+  border-color: #fef08a;
+}
+
+.btn-start {
+  background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+  color: #fff;
+  border-color: #fca5a5;
+  padding: 10px 30px;
+  font-size: 17px;
+}
+
+.btn-arcade-action.pulse-glow {
+  animation: action-pulse 1s infinite alternate;
+}
+
+@keyframes action-pulse {
+  from { box-shadow: 0 5px 0 rgba(0, 0, 0, 0.6), 0 0 10px #f59e0b; }
+  to { box-shadow: 0 5px 0 rgba(0, 0, 0, 0.6), 0 0 25px #ef4444, 0 0 35px #f59e0b; }
+}
+
+/* ==========================================================================
+   COIN PAYOUT TRAY (CANVAS PHYSICS + EMBOSSED METAL RIM)
+   ========================================================================== */
+
+.tray-panel {
+  position: relative;
+  margin-top: 12px;
+  background: linear-gradient(180deg, #111827 0%, #030712 100%);
+  border: 4px solid #4b5563;
+  border-radius: 12px;
+  padding: 8px 12px 10px;
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.9),
+    inset 0 4px 10px rgba(0, 0, 0, 0.95);
+  overflow: hidden;
+}
+
+.tray-panel.payout-active {
+  border-color: #eab308;
+  box-shadow: 0 0 25px rgba(234, 179, 8, 0.6), inset 0 0 15px rgba(234, 179, 8, 0.4);
+}
+
+.tray-chute-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+/* Center Mechanical Coin Chute Mouth */
+.chute-mouth-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chute-slit {
+  width: 90px;
+  height: 8px;
+  background: #000;
+  border-radius: 4px;
+  border: 1px solid #374151;
+  box-shadow: inset 0 2px 4px #000;
+}
+
+.tray-lamp {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #374151;
+  border: 1px solid #6b7280;
+}
+
+.tray-panel.payout-active .tray-lamp {
+  background: #eab308;
+  box-shadow: 0 0 10px #eab308, 0 0 15px #fef08a;
+  animation: tray-lamp-blink 0.2s infinite alternate;
+}
+
+@keyframes tray-lamp-blink {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+.tray-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  border-radius: 6px;
+  background: radial-gradient(circle at 50% 100%, #1f2937 0%, #0b0f19 100%);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+#coin-tray-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tray-bottom-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 11px;
+}
+
+.tray-coin-info {
+  color: #facc15;
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.btn-collect-tray-coins {
+  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  border: 1px solid #34d399;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.btn-collect-tray-coins:hover {
+  filter: brightness(1.15);
+}
+
+/* ==========================================================================
+   ENHANCED ARCADE CONTROLS: GIANT START, COIN OUT HOLD, 3D DOUBLE-UP CARD
+   ========================================================================== */
+
+
+
+/* 2. COIN OUT Button: Single-click instant payout */
+.coin-out-module {
+  position: relative;
+}
+
+.btn-coin-out-arcade {
+  position: relative;
+  background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+  border: 2px solid #6b7280;
+  border-radius: 8px;
+  color: #9ca3af;
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 4px 0 #111827;
+  transition: all 0.1s;
+  min-width: 110px;
+}
+
+.btn-coin-out-arcade:not(:disabled) {
+  background: linear-gradient(180deg, #d97706 0%, #92400e 100%);
+  border-color: #fbbf24;
+  color: #fff;
+  box-shadow: 0 4px 0 #451a03;
+}
+
+.btn-coin-out-arcade:not(:disabled):hover {
+  filter: brightness(1.15);
+}
+
+.btn-coin-out-arcade:not(:disabled):active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #451a03;
+}
+
+.btn-coin-out-arcade:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.8);
+}
+
+.coin-out-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.coin-out-label {
+  font-family: Impact, sans-serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.coin-out-tip {
+  font-size: 8px;
+  color: #fef08a;
+  margin-top: 2px;
+}
+
+.btn-bar-small {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%) !important;
+  border-color: #60a5fa !important;
+  color: #fff !important;
+  box-shadow: 0 4px 0 #1e3a8a, 0 0 12px rgba(37, 99, 235, 0.6) !important;
+}
+
+.btn-bar-big {
+  background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%) !important;
+  border-color: #f87171 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 0 #7f1d1d, 0 0 12px rgba(220, 38, 38, 0.6) !important;
+}
+
+.btn-bar-collect {
+  background: linear-gradient(180deg, #16a34a 0%, #15803d 100%) !important;
+  border-color: #4ade80 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 0 #14532d, 0 0 12px rgba(34, 197, 94, 0.6) !important;
+}
+
+.btn-bar-continue {
+  background: linear-gradient(180deg, #d97706 0%, #b45309 100%) !important;
+  border-color: #fbbf24 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 0 #78350f, 0 0 12px rgba(245, 158, 11, 0.6) !important;
+}
+
+/* 3. Enhanced Double-Up Arena */
+.double-top-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.double-round-tag {
+  background: #000;
+  color: #38bdf8;
+  border: 1px solid #0284c7;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+}
+
+/* Dual Meters: Stake and Balance side-by-side with large number support */
+.du-meters-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: #000;
+  border: 1.5px solid #5a3416;
+  border-radius: 8px;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+  gap: 6px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.du-meter-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 3px 6px;
+  border-radius: 5px;
+  background: #0a0402;
+  transition: all 0.2s ease;
+}
+
+.du-stake-meter {
+  border: 1px solid #78350f;
+}
+
+.du-balance-meter {
+  border: 1px solid #1e3a8a;
+}
+
+.du-meter-lbl {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #9ca3af;
+  margin-bottom: 1px;
+}
+
+.du-stake-meter .du-meter-lbl {
+  color: #fde047;
+}
+
+.du-balance-meter .du-meter-lbl {
+  color: #93c5fd;
+}
+
+.du-meter-val {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.du-stake-meter .du-meter-val {
+  color: #facc15;
+  text-shadow: 0 0 8px rgba(250, 204, 21, 0.6);
+}
+
+.du-balance-meter .du-meter-val {
+  color: #38bdf8;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+.du-meter-divider {
+  font-size: 14px;
+  color: #f59e0b;
+  text-shadow: 0 0 6px #f59e0b;
+  user-select: none;
+}
+
+/* Flash pulse animations when raising */
+@keyframes pulse-stake-add {
+  0% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.06); filter: brightness(1.6); box-shadow: 0 0 12px #facc15; }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+@keyframes pulse-balance-sub {
+  0% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(0.97); filter: brightness(1.4); box-shadow: 0 0 10px #38bdf8; }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+.pulse-stake-add {
+  animation: pulse-stake-add 0.3s ease;
+}
+
+.pulse-balance-sub {
+  animation: pulse-balance-sub 0.3s ease;
+}
+
+/* + Raise Button Section: Options +1, +10, +Half, +All */
+.du-raise-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid #451a03;
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+
+.du-raise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.du-raise-lbl {
+  font-size: 10px;
+  font-weight: 800;
+  color: #fbbf24;
+  letter-spacing: 0.5px;
+}
+
+.du-raise-btns-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  width: 100%;
+}
+
+.btn-du-raise {
+  flex: 1;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border: 1.5px solid #475569;
+  color: #f8fafc;
+  border-radius: 5px;
+  padding: 4px 2px;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.btn-du-raise:not(:disabled):hover {
+  background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+  border-color: #f59e0b;
+  transform: translateY(-1px);
+}
+
+.btn-du-raise:not(:disabled):active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.btn-du-raise:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  filter: grayscale(0.85);
+  border-color: #334155;
+}
+
+.btn-raise-1:not(:disabled) {
+  border-color: #38bdf8;
+  color: #bae6fd;
+}
+
+.btn-raise-10:not(:disabled) {
+  border-color: #facc15;
+  color: #fef08a;
+}
+
+.btn-raise-half:not(:disabled) {
+  border-color: #fb923c;
+  color: #fed7aa;
+}
+
+.btn-raise-all:not(:disabled) {
+  border-color: #f43f5e;
+  color: #fecdd3;
+  background: linear-gradient(180deg, #881337 0%, #4c0519 100%);
+}
+
+.btn-direct-collect {
+  background: linear-gradient(180deg, #16a34a 0%, #15803d 100%) !important;
+  border-color: #4ade80 !important;
+  color: #fff !important;
+}
+
+/* 3D Playing Card & Dice Reveal Scene */
+.du-card-scene {
+  width: 76px;
+  height: 96px;
+  perspective: 600px;
+  margin: 4px auto 6px;
+}
+
+.du-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+}
+
+.du-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.du-card.rolling-drumroll {
+  animation: drumroll-spin 0.22s infinite linear;
+}
+
+@keyframes drumroll-spin {
+  0% { transform: rotateY(0deg) scale(0.95); }
+  50% { transform: rotateY(180deg) scale(1.06); }
+  100% { transform: rotateY(360deg) scale(0.95); }
+}
+
+.du-card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.du-card-back {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e1b4b 100%);
+  border: 3px solid #facc15;
+  color: #facc15;
+}
+
+.card-back-pattern {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(250, 204, 21, 0.6);
+  width: 86%;
+  height: 88%;
+  border-radius: 5px;
+}
+
+.card-crest {
+  font-family: Impact, sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.card-dots {
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.du-card-front {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  border: 3px solid #dc2626;
+  color: #111827;
+  transform: rotateY(180deg);
+  padding: 4px;
+}
+
+.card-front-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-corner-top {
+  align-self: flex-start;
+  font-weight: 900;
+  font-size: 13px;
+  color: #dc2626;
+  line-height: 1;
+}
+
+.card-center-val {
+  font-family: Impact, sans-serif;
+  font-size: 34px;
+  color: #111827;
+  line-height: 1;
+}
+
+.card-label-tag {
+  font-size: 9px;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1;
+}
+
+.card-label-tag.small-tag {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.card-label-tag.big-tag {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.card-label-tag.tie-tag {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+/* Post-Win Choices (Collect vs Continue) */
+.du-win-actions-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.btn-du-post-win {
+  flex: 1;
+  border-radius: 6px;
+  padding: 8px 6px;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  border: 2px solid;
+  transition: all 0.1s;
+}
+
+.btn-post-collect {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  border-color: #93c5fd;
+  color: #fff;
+}
+
+.btn-post-continue {
+  background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
+  border-color: #86efac;
+  color: #fff;
+}
+
+.btn-du-post-win:hover {
+  filter: brightness(1.15);
+}
+
+.btn-du-post-win:active {
+  transform: translateY(2px);
+}
+
+/* Cabinet Dimmed state on wrong guess */
+.arcade-cabinet.cabinet-dimmed {
+  filter: brightness(0.4) saturate(0.6);
+  transition: filter 0.3s ease-out;
+}
+
+/* Draggable Coin Avatar and Slot Hover */
+.dragging-coin-avatar {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff799 0%, #eab308 60%, #a16207 100%);
+  border: 2px solid #fef08a;
+  box-shadow: 0 0 16px #facc15, 0 6px 12px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+}
+
+.metal-coin-slot.slot-drag-hover {
+  box-shadow: 0 0 25px #22c55e, inset 0 0 10px #86efac !important;
+  border-color: #4ade80 !important;
+  transform: scale(1.12) !important;
+}
+
+.tray-hint {
+  font-size: 10px;
+  color: #9ca3af;
+  margin-left: 6px;
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYOUT FOR MOBILE AND TABLETS
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  body {
+    padding: 3px;
+  }
+
+  .arcade-cabinet {
+    padding: 6px;
+    border-width: 5px;
+    box-shadow: 
+      0 0 0 2px #261608,
+      0 0 0 4px #d4af37,
+      0 8px 20px rgba(0, 0, 0, 0.8),
+      inset 0 0 15px rgba(0, 0, 0, 0.7);
+  }
+
+  /* 1. Header bar wrap */
+  .retro-header-bar {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .header-left, .header-right {
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .retro-chip {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+
+  .header-btn {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+
+  /* 2. Top cabinet header: Clean 2-row layout without squishing */
+  .cabinet-top-header {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 2px;
+    gap: 6px;
+  }
+
+  .marquee-title-box {
+    order: -1;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 2px;
+  }
+
+  .marquee-crown {
+    font-size: 20px;
+  }
+
+  .title-text-group h1 {
+    font-size: 17px;
+    letter-spacing: 1px;
+  }
+
+  .title-sub {
+    font-size: 8px;
+    letter-spacing: 2px;
+  }
+
+  .top-led-module {
+    min-width: 0;
+    flex: 1;
+    padding: 3px 4px;
+  }
+
+  .top-led-label {
+    font-size: 8px;
+    letter-spacing: 0;
+  }
+
+  .top-led-prefix {
+    font-size: 10px;
+  }
+
+  .top-seven-seg {
+    font-size: 18px;
+    min-width: 44px;
+    letter-spacing: 1.5px;
+    padding: 1px 3px;
+  }
+
+  .top-right-group {
+    flex: 1.2;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+
+  .coin-slot-module {
+    padding: 3px 5px;
+    gap: 4px;
+  }
+
+  .metal-coin-slot {
+    width: 38px;
+    height: 28px;
+  }
+
+  .coin-slit {
+    height: 16px;
+    width: 5px;
+  }
+
+  .slot-tag {
+    font-size: 6px;
+  }
+
+  .btn-quick-coin {
+    padding: 3px 5px;
+    font-size: 9px;
+  }
+
+  .coin-sub-tag {
+    font-size: 7.5px;
+  }
+
+  /* 3. 7x7 Playfield Surround & Slots on mobile */
+  .playfield-surround {
+    padding: 4px;
+    border-width: 3px;
+    border-radius: 8px;
+  }
+
+  .light-ring-grid {
+    gap: 2.5px;
+  }
+
+  .slot-cell {
+    padding: 1px;
+    border-radius: 5px;
+    border-width: 1.5px;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .slot-icon {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  .slot-icon.bar {
+    font-size: 10px;
+    padding: 1px 2px;
+    letter-spacing: 0.5px;
+    border-width: 1px;
+  }
+
+  .slot-icon.seven {
+    font-size: 17px;
+    -webkit-text-stroke: 0.8px #ffffff;
+  }
+
+  .slot-name {
+    font-size: 7.5px;
+    line-height: 1;
+  }
+
+  .slot-mult {
+    font-size: 7px;
+    line-height: 1;
+  }
+
+  .slot-bulb {
+    width: 5px;
+    height: 5px;
+    top: 2px;
+    right: 2px;
+  }
+
+  /* 4. Center Playfield on mobile */
+  .center-playfield {
+    padding: 4px 6px;
+    border-width: 2px;
+    border-radius: 8px;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .marquee-ticker-container {
+    padding: 2px 4px;
+  }
+
+  .marquee-ticker {
+    font-size: 9.5px;
+    letter-spacing: 0.5px;
+  }
+
+  .mario-center-img {
+    max-height: calc(100% - 16px);
+  }
+
+  .mascot-subtitle {
+    font-size: 9px;
+    margin-top: 1px;
+    letter-spacing: 1px;
+  }
+
+  .center-leds-bar {
+    padding: 3px 4px;
+    border-width: 2px;
+    border-radius: 6px;
+  }
+
+  .seven-seg-display {
+    font-size: 15px;
+    min-width: 45px;
+    padding: 1px 3px;
+    letter-spacing: 1px;
+  }
+
+  .led-meter-label {
+    font-size: 7.5px;
+    margin-bottom: 1px;
+  }
+
+  /* Double-Up modal adjustments for small screens */
+  .double-up-panel {
+    padding: 4px;
+  }
+
+  .double-title {
+    font-size: 9px;
+    margin-bottom: 2px;
+  }
+
+  .du-round-badge {
+    font-size: 8px;
+    padding: 1px 3px;
+  }
+
+  .du-meters-row {
+    gap: 4px;
+    margin-bottom: 3px;
+  }
+
+  .du-meter-box {
+    padding: 2px 4px;
+  }
+
+  .du-meter-lbl {
+    font-size: 7px;
+  }
+
+  .du-meter-val {
+    font-size: 13px;
+    min-width: 36px;
+  }
+
+  .du-raise-section {
+    margin-bottom: 3px;
+  }
+
+  .du-raise-lbl {
+    font-size: 7.5px;
+  }
+
+  .btn-du-raise {
+    padding: 2px 4px;
+    font-size: 8px;
+  }
+
+  .du-card-scene {
+    width: 55px;
+    height: 60px;
+    margin: 2px auto 4px;
+  }
+
+  .card-corner-top {
+    font-size: 9px;
+  }
+
+  .card-center-val {
+    font-size: 22px;
+  }
+
+  .card-label-tag {
+    font-size: 7px;
+  }
+
+  .double-buttons-row {
+    gap: 4px;
+  }
+
+  .btn-gamble {
+    padding: 4px 6px;
+    font-size: 9px;
+  }
+
+  /* 5. Bet Console on mobile */
+  .bet-console-surround {
+    padding: 5px 3px;
+    margin-top: 6px;
+    border-width: 2px;
+    border-radius: 8px;
+  }
+
+  .bet-console-title {
+    flex-direction: column;
+    gap: 1px;
+    text-align: center;
+    font-size: 8px;
+    margin-bottom: 3px;
+  }
+
+  /* 9 Buttons in 1 single horizontal row with safe minmax tracks */
+  .bet-and-start-row {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: 2px;
+  }
+
+  .arcade-bet-btn,
+  .arcade-start-btn {
+    min-height: 68px;
+    min-width: 0;
+    padding: 3px 1px;
+    border-radius: 5px;
+    border-width: 1.5px;
+  }
+
+  .btn-icon {
+    font-size: 15px;
+    margin: 1px 0;
+  }
+
+  .btn-icon.bar,
+  .arcade-bet-btn.btn-bet-bar .btn-icon {
+    font-size: 9.5px !important;
+    padding: 0 1px !important;
+    letter-spacing: 0 !important;
+    border-width: 1px !important;
+  }
+
+  .btn-icon.seven,
+  .arcade-bet-btn.btn-bet-seven .btn-icon {
+    font-size: 14px !important;
+    -webkit-text-stroke: 0.6px #ffffff !important;
+  }
+
+  .arcade-bet-btn.btn-bet-star .btn-icon,
+  .btn-icon.star {
+    font-size: 15px !important;
+  }
+
+  .btn-star-svg,
+  .arcade-bet-btn .golden-star-svg {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  .btn-label {
+    font-size: 7.5px;
+    line-height: 1;
+  }
+
+  .btn-top-mult {
+    font-size: 7px;
+    line-height: 1;
+  }
+
+  .btn-bet-counter {
+    font-size: 8.5px;
+    padding: 1px 2px;
+    min-width: 14px;
+    margin-top: 1px;
+  }
+
+  .start-btn-top {
+    font-size: 7px;
+  }
+
+  .start-btn-title {
+    font-size: 11px;
+    letter-spacing: 0;
+  }
+
+  .start-btn-sub {
+    font-size: 7.5px;
+  }
+
+  .btn-shortcut,
+  .start-btn-shortcut {
+    display: none;
+  }
+
+  /* 6. Action controls row on mobile: 2 clean non-squished rows */
+  .action-controls-row {
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 6px;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .coin-out-module {
+    order: 1;
+  }
+
+  .btn-coin-out-arcade {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .coin-out-icon {
+    font-size: 12px;
+  }
+
+  .coin-out-label {
+    font-size: 10px;
+  }
+
+  .coin-out-tip {
+    display: none;
+  }
+
+  .win-decision-actions {
+    order: 2;
+    gap: 4px;
+  }
+
+  .btn-arcade-action {
+    padding: 5px 10px;
+    font-size: 11px;
+    border-width: 2px;
+  }
+
+  .secondary-actions {
+    order: 3;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 3px;
+    margin-top: 2px;
+  }
+
+  .secondary-actions .btn-secondary {
+    flex: 1;
+    text-align: center;
+    padding: 5px 2px;
+    font-size: 9.5px;
+    white-space: nowrap;
+  }
+
+  /* 7. Coin Payout Tray on mobile */
+  .tray-panel {
+    margin-top: 6px;
+    padding: 5px 6px;
+    border-width: 3px;
+    border-radius: 8px;
+  }
+
+  .chute-slit {
+    width: 60px;
+    height: 6px;
+  }
+
+  .tray-canvas-wrapper {
+    height: 65px;
+  }
+
+  .tray-bottom-bar {
+    flex-direction: column;
+    gap: 3px;
+    align-items: center;
+    text-align: center;
+    font-size: 9.5px;
+    margin-top: 4px;
+  }
+
+  .btn-collect-tray-coins {
+    width: 100%;
+    padding: 4px 6px;
+    font-size: 10.5px;
+  }
+}
+
+/* ==========================================================================
+   DESKTOP ENHANCEMENT: LARGER GRAPHICS & IMMERSIVE ARCADE PRESENTATION
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+  .retro-header-bar {
+    max-width: 1160px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    padding: 6px 12px;
+  }
+
+  .header-btn {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .arcade-cabinet {
+    max-width: 1140px;
+    padding: 20px 24px;
+    border-width: 10px;
+    border-radius: 24px;
+  }
+
+  /* Header Displays & Marquee Title */
+  .cabinet-top-header {
+    padding: 6px 10px;
+    margin-bottom: 8px;
+  }
+
+  .marquee-crown {
+    font-size: 34px;
+  }
+
+  .title-text-group h1 {
+    font-size: 30px;
+    letter-spacing: 2.5px;
+  }
+
+  .title-sub {
+    font-size: 13px;
+    letter-spacing: 5px;
+  }
+
+  .top-led-module {
+    min-width: 125px;
+    padding: 6px 12px;
+  }
+
+  .top-led-label {
+    font-size: 11px;
+  }
+
+  .top-led-prefix {
+    font-size: 15px;
+  }
+
+  .top-seven-seg {
+    font-size: 32px;
+    min-width: 92px;
+    letter-spacing: 4px;
+    padding: 3px 8px;
+  }
+
+  .metal-coin-slot {
+    width: 66px;
+    height: 44px;
+  }
+
+  .coin-slit {
+    width: 7px;
+    height: 28px;
+  }
+
+  .btn-quick-coin {
+    padding: 8px 14px;
+    font-size: 12.5px;
+  }
+
+  /* 7x7 Playfield Surround & Slot Graphics */
+  .playfield-surround {
+    padding: 12px;
+    border-width: 5px;
+    border-radius: 18px;
+  }
+
+  .light-ring-grid {
+    gap: 8px;
+  }
+
+  .slot-cell {
+    border-width: 2.5px;
+    border-radius: 10px;
+    padding: 4px;
+  }
+
+  .slot-icon {
+    font-size: 46px;
+    margin: 2px 0;
+  }
+
+  .slot-icon.bar {
+    font-size: 26px;
+    padding: 2px 7px;
+    letter-spacing: 2px;
+    border-width: 2.5px;
+  }
+
+  .slot-icon.seven {
+    font-size: 42px;
+    -webkit-text-stroke: 2px #ffffff;
+  }
+
+  .slot-name {
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+
+  .slot-mult {
+    font-size: 12px;
+    letter-spacing: 0.8px;
+  }
+
+  .slot-bulb {
+    width: 12px;
+    height: 12px;
+    top: 5px;
+    right: 5px;
+  }
+
+  /* Center Area */
+  .center-playfield {
+    padding: 12px 14px;
+    border-width: 4px;
+    border-radius: 14px;
+  }
+
+  .marquee-ticker {
+    font-size: 15px;
+    letter-spacing: 1.5px;
+  }
+
+  .center-leds-bar {
+    padding: 8px 16px;
+    border-width: 4px;
+  }
+
+  .seven-seg-display {
+    font-size: 32px;
+    min-width: 110px;
+    padding: 4px 10px;
+    letter-spacing: 5px;
+  }
+
+  .led-meter-label {
+    font-size: 12px;
+  }
+
+  .mascot-subtitle {
+    font-size: 14px;
+    letter-spacing: 3px;
+    margin-top: 6px;
+  }
+
+  /* Bet Console Buttons */
+  .bet-console-surround {
+    padding: 12px 14px;
+    margin-top: 14px;
+    border-width: 4px;
+  }
+
+  .bet-console-title {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .bet-and-start-row {
+    gap: 8px;
+  }
+
+  .arcade-bet-btn {
+    min-height: 114px;
+    padding: 8px 4px;
+    border-radius: 10px;
+  }
+
+  .btn-icon {
+    font-size: 34px;
+    margin: 4px 0;
+  }
+
+  .btn-icon.bar {
+    font-size: 22px;
+    padding: 1px 6px;
+  }
+
+  .btn-icon.seven {
+    font-size: 34px;
+  }
+
+  .btn-label {
+    font-size: 13px;
+  }
+
+  .btn-top-mult {
+    font-size: 12px;
+  }
+
+  .btn-bet-counter {
+    font-size: 14px;
+    min-width: 26px;
+    padding: 2px 6px;
+    margin-top: 4px;
+  }
+
+  .btn-shortcut {
+    font-size: 10px;
+  }
+
+  .arcade-start-btn {
+    min-height: 114px;
+    padding: 8px 4px;
+    border-radius: 10px;
+  }
+
+  .start-btn-title {
+    font-size: 25px;
+  }
+
+  .start-btn-top {
+    font-size: 13px;
+  }
+
+  .start-btn-sub {
+    font-size: 12px;
+  }
+
+  /* Cabinet Action Controls */
+  .action-controls-row {
+    margin-top: 14px;
+    gap: 12px;
+  }
+
+  .btn-arcade-action {
+    padding: 12px 28px;
+    font-size: 17px;
+  }
+
+  .btn-secondary {
+    padding: 10px 16px;
+    font-size: 13.5px;
+  }
+
+  .btn-coin-out-arcade {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  /* Coin Payout Tray */
+  .tray-panel {
+    margin-top: 14px;
+    padding: 10px 16px 12px;
+  }
+
+  .tray-canvas-wrapper {
+    height: 120px;
+  }
+
+  .tray-bottom-bar {
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  .btn-collect-tray-coins {
+    font-size: 13px;
+    padding: 5px 12px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .retro-header-bar {
+    max-width: 1220px;
+  }
+
+  .arcade-cabinet {
+    max-width: 1200px;
+  }
+
+  .slot-icon {
+    font-size: 50px;
+  }
+
+  .slot-icon.seven {
+    font-size: 46px;
+  }
+
+  .slot-icon.bar {
+    font-size: 28px;
+  }
+
+  .btn-icon {
+    font-size: 38px;
+  }
+
+  .btn-icon.seven {
+    font-size: 38px;
+  }
+
+  .btn-icon.bar {
+    font-size: 24px;
+  }
+
+  .arcade-bet-btn,
+  .arcade-start-btn {
+    min-height: 120px;
+  }
+}

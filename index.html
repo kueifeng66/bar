@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>歡樂小瑪莉 - 經典復古街機水果盤 (Little Mary Fruit Slot)</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Optional CRT Scanlines Overlay -->
+  <div class="crt-overlay" id="crt-overlay"></div>
+
+  <!-- Header Quick Settings & Pocket Bank -->
+  <header class="retro-header-bar">
+    <div class="header-left">
+      <span class="retro-chip">🪙 累積收納: <strong id="pocket-bank-display">0</strong> 枚</span>
+      <span class="retro-chip">RTP: <strong>96.8%</strong></span>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" id="btn-toggle-sound" title="切換靜音">🔊 聲音: 開</button>
+      <button class="header-btn" id="btn-toggle-crt" title="CRT復古螢幕濾鏡">📺 CRT濾鏡</button>
+      <button class="header-btn" id="btn-help-modal" title="遊戲規則說明">❓ 規則</button>
+    </div>
+  </header>
+
+  <!-- Main Arcade Cabinet -->
+  <main class="arcade-cabinet" id="arcade-cabinet">
+
+    <!-- Top Header: Symmetrical Won (Top-Left), Title Marquee (Center), Inserted & Coin Slot (Top-Right) -->
+    <div class="cabinet-top-header">
+      <!-- Top Left: Symmetrical WON Prize LED Display -->
+      <div class="top-led-module top-won-module" id="box-top-won" title="本局獲得獎金">
+        <div class="top-led-label" id="label-top-won">本局獎金 WON</div>
+        <div class="top-led-screen">
+          <span class="top-led-prefix">NT$</span>
+          <span class="top-seven-seg" id="display-won">0000</span>
+        </div>
+      </div>
+
+      <!-- Center: Marquee Title -->
+      <div class="marquee-title-box">
+        <div class="marquee-crown">👑</div>
+        <div class="title-text-group">
+          <h1>歡樂小瑪莉</h1>
+          <div class="title-sub">LITTLE MARY ARCADE</div>
+        </div>
+      </div>
+
+      <!-- Top Right: Symmetrical Player Balance / CREDIT LED Display & Coin Slot Module -->
+      <div class="top-right-group">
+        <div class="top-led-module top-inserted-module" id="box-top-inserted" title="玩家餘額 (NT$)">
+          <div class="top-led-label" id="label-top-inserted">玩家餘額 CREDIT</div>
+          <div class="top-led-screen">
+            <span class="top-led-prefix">NT$</span>
+            <span class="top-seven-seg" id="display-inserted">0050</span>
+          </div>
+        </div>
+
+        <!-- Metal Coin Insertion Slot Panel -->
+        <div class="coin-slot-module">
+          <div class="coin-lamp-indicator">
+            <div class="lamp-bulb" id="coin-ready-lamp"></div>
+            <span class="lamp-label">READY</span>
+          </div>
+
+          <!-- Clickable Coin Slot Slit -->
+          <div class="metal-coin-slot" id="metal-coin-slot" title="點擊投幣 (NT$10 / 拾圓)">
+            <div class="coin-slit"></div>
+            <span class="slot-tag">NT$10</span>
+          </div>
+
+          <!-- Quick Insert Button -->
+          <button class="btn-quick-coin" id="btn-insert-coin" title="投幣 (+NT$10 / +10 Credit)">
+            <span>投幣 NT$10</span>
+            <span class="coin-sub-tag">[按 C 鍵]</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7x7 Playfield Surround: 24 Border Slots & Center Panel -->
+    <div class="playfield-surround">
+      <div class="light-ring-grid" id="light-ring-grid">
+        <!-- 24 Border Slots will be rendered here by js/game.js -->
+
+        <!-- Center 5x5 Area -->
+        <div class="center-playfield" id="center-playfield">
+
+          <!-- Announcement Marquee Ticker -->
+          <div class="marquee-ticker-container">
+            <div class="marquee-ticker" id="arcade-marquee-ticker">
+              ★ 歡迎光臨歡樂小瑪莉！請投幣並押注 ★
+            </div>
+          </div>
+
+
+          <!-- Mid Section: Cartoon Mascot Illustration & Enhanced Double-Up Panel -->
+          <div class="center-mid-section" id="center-mid-section">
+
+            <!-- Mascot: mario.jpg positioned in center of playing field -->
+            <div class="mascot-art-box" id="mascot-art-box">
+              <img src="mario.jpg" alt="Mario" class="mario-center-img" id="mario-center-img">
+              <div class="mascot-subtitle">LUCKY MARY</div>
+            </div>
+
+            <!-- Enhanced Double-Up (Higher / Lower) Arena -->
+            <div class="double-up-panel" id="double-up-panel">
+              <div class="double-top-info">
+                <span class="double-title">★ 比倍專區 ★</span>
+                <span class="double-round-tag" id="du-round-badge">關卡 1/5</span>
+              </div>
+
+              <!-- Dual Meters Row: Clearly shows Current Stake and Balance with large number support -->
+              <div class="du-meters-row">
+                <div class="du-meter-box du-stake-meter">
+                  <span class="du-meter-lbl">本局押分 STAKE</span>
+                  <span class="du-meter-val" id="du-stake-val">0</span>
+                </div>
+                <div class="du-meter-divider">⚡</div>
+                <div class="du-meter-box du-balance-meter">
+                  <span class="du-meter-lbl">玩家餘額 CREDIT</span>
+                  <span class="du-meter-val" id="du-balance-val">0</span>
+                </div>
+              </div>
+
+              <!-- + Raise Section: Options +1, +10, +Half, +All -->
+              <div class="du-raise-section">
+                <div class="du-raise-header">
+                  <span class="du-raise-lbl">🪙 餘額加注 (+ RAISE):</span>
+                </div>
+                <div class="du-raise-btns-row" id="du-raise-btns">
+                  <button class="btn-du-raise btn-raise-1" id="btn-du-raise-1" title="自餘額加注 1 分">
+                    <span class="raise-plus">+1</span>
+                  </button>
+                  <button class="btn-du-raise btn-raise-10" id="btn-du-raise-10" title="自餘額加注 10 分">
+                    <span class="raise-plus">+10</span>
+                  </button>
+                  <button class="btn-du-raise btn-raise-half" id="btn-du-raise-half" title="自餘額加注一半">
+                    <span class="raise-plus">+Half</span>
+                  </button>
+                  <button class="btn-du-raise btn-raise-all" id="btn-du-raise-all" title="全押剩餘全部餘額">
+                    <span class="raise-plus">+All</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 3D Card / Dice Reveal Area -->
+              <div class="du-card-scene" id="du-card-scene">
+                <div class="du-card" id="du-card">
+                  <!-- Card Back -->
+                  <div class="du-card-face du-card-back">
+                    <div class="card-back-pattern">
+                      <div class="card-crest">★ M ★</div>
+                      <div class="card-dots">••••••</div>
+                    </div>
+                  </div>
+                  <!-- Card Front -->
+                  <div class="du-card-face du-card-front">
+                    <div class="card-front-content">
+                      <div class="card-corner-top" id="du-card-corner">?</div>
+                      <div class="card-center-val" id="du-card-val">?</div>
+                      <div class="card-label-tag" id="du-card-type">等待選擇</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Choice Buttons (Small 1-6 vs Big 8-13, and Direct Collect) -->
+              <div class="double-buttons-row" id="du-choice-buttons">
+                <button class="btn-gamble btn-small" id="btn-gamble-small" disabled title="猜小 (1-6) [Z 鍵]">
+                  小 (1–6)<br><small>[Z 鍵]</small>
+                </button>
+                <button class="btn-gamble btn-big" id="btn-gamble-big" disabled title="猜大 (8–13) [X 鍵]">
+                  大 (8–13)<br><small>[X 鍵]</small>
+                </button>
+                <button class="btn-gamble btn-direct-collect" id="btn-du-choice-collect" disabled title="隨時收分入餘額 [Enter 鍵]">
+                  💰 收分<br><small>[Enter]</small>
+                </button>
+              </div>
+
+              <!-- Win Action Buttons (Collect vs Continue/Raise) -->
+              <div class="du-win-actions-row" id="du-win-actions" style="display: none;">
+                <button class="btn-du-post-win btn-post-collect" id="btn-du-post-collect" title="取得翻倍獎金入餘額 [Enter 鍵]">
+                  💰 取得收分
+                </button>
+                <button class="btn-du-post-win btn-post-continue" id="btn-du-post-continue" title="進入下一關挑戰並可再次加注 [空白鍵]">
+                  ⚡ 繼續挑戰 / 加注
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom of Center: 7-SEGMENT RED LED DISPLAYS -->
+          <div class="center-leds-bar">
+            <!-- CREDIT -->
+            <div class="led-meter-box">
+              <div class="led-meter-label">總分 CREDIT</div>
+              <div class="seven-seg-display" id="display-credit">0050</div>
+            </div>
+
+            <!-- BET -->
+            <div class="led-meter-box">
+              <div class="led-meter-label">押分 BET</div>
+              <div class="seven-seg-display yellow-seg" id="display-bet">000</div>
+            </div>
+
+            <!-- BONUS WIN -->
+            <div class="led-meter-box">
+              <div class="led-meter-label">得分 BONUS WIN</div>
+              <div class="seven-seg-display green-seg" id="display-win">0000</div>
+            </div>
+          </div>
+
+        </div>
+        <!-- End Center 5x5 Area -->
+
+      </div>
+    </div>
+
+    <!-- Bet Console Surround: 8 Bet Symbol Buttons + 1 START Button in 1 Single Horizontal Row (9 Columns) -->
+    <div class="bet-console-surround">
+      <div class="bet-console-title">
+        <span>🎮 押注盤面 (點擊按鈕增加押注，對應 1~8 快捷鍵)</span>
+        <span>倍率：<strong class="red-bar-text">BAR 100x</strong> | <strong class="red-seven-text">77 50x</strong> | 星 40x | 瓜 30x | 鈴 20x | 芒 15x | 橘 10x | 蘋 5x</span>
+      </div>
+      <div class="bet-and-start-row" id="bet-and-start-row">
+        <!-- 8 bet buttons injected dynamically by js/game.js -->
+        <!-- 9. START Button: Far right in single 9-column row with equal 1/9th width, distinct arcade styling -->
+        <button class="arcade-start-btn" id="btn-start" disabled title="啟動跑馬燈 [空白鍵]">
+          <div class="start-btn-halo"></div>
+          <span class="start-btn-top">GO!</span>
+          <span class="start-btn-title">START</span>
+          <span class="start-btn-sub">啟動</span>
+          <span class="start-btn-shortcut">[空白]</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Cabinet Action Controls (COIN OUT, Secondary Utilities, Win Decisions) -->
+    <div class="action-controls-row">
+      <!-- 2. COIN OUT Button: Single-click instant payout -->
+      <div class="coin-out-module">
+        <button class="btn-coin-out-arcade" id="btn-coin-out" disabled title="退幣 [P 鍵]">
+          <span class="coin-out-icon">🪙</span>
+          <span class="coin-out-label">COIN OUT</span>
+          <small class="coin-out-tip">退幣 [P 鍵]</small>
+        </button>
+      </div>
+
+      <!-- Secondary Bet Utilities -->
+      <div class="secondary-actions">
+        <button class="btn-secondary" id="btn-bet-all" title="所有水果各押 1 分">全押 BET ALL</button>
+        <button class="btn-secondary" id="btn-repeat-bet" title="重複上次押注">前次押注 RE-BET</button>
+        <button class="btn-secondary" id="btn-clear-bet" title="清除押注退回分數">清除押注</button>
+      </div>
+
+      <!-- Win Decision Action Buttons (Collect, Double-Up, and Mirrored Gamble Controls) -->
+      <div class="win-decision-actions" id="win-decision-actions">
+        <button class="btn-arcade-action btn-collect" id="btn-collect" disabled title="取得得分入總分 [Enter 鍵]">
+          <span>💰 取得</span>
+          <small>[Enter]</small>
+        </button>
+        <button class="btn-arcade-action btn-double-up-enter" id="btn-enter-double" disabled title="進入比倍挑戰 [D 鍵]">
+          <span>🎲 比倍</span>
+          <small>[D 鍵]</small>
+        </button>
+        <button class="btn-arcade-action btn-gamble btn-small" id="btn-bar-small" style="display: none;" title="猜小 (1-6) [Z 鍵]">
+          <span>小 (1–6)</span>
+          <small>[Z 鍵]</small>
+        </button>
+        <button class="btn-arcade-action btn-gamble btn-big" id="btn-bar-big" style="display: none;" title="猜大 (8-13) [X 鍵]">
+          <span>大 (8–13)</span>
+          <small>[X 鍵]</small>
+        </button>
+        <button class="btn-arcade-action btn-du-post-win btn-post-collect" id="btn-bar-collect" style="display: none;" title="取得比倍獎金 [Enter 鍵]">
+          <span>💰 取得收分</span>
+          <small>[Enter]</small>
+        </button>
+        <button class="btn-arcade-action btn-du-post-win btn-post-continue" id="btn-bar-continue" style="display: none;" title="繼續挑戰下一關 [空白鍵]">
+          <span>⚡ 繼續挑戰</span>
+          <small>[空白]</small>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. Physical Coin Payout Tray: Recessed metal tray right under coin chute -->
+    <div class="tray-panel" id="tray-panel">
+      <div class="tray-chute-header">
+        <div class="tray-lamp" id="tray-lamp-left"></div>
+        <div class="chute-mouth-box">
+          <div class="chute-slit"></div>
+        </div>
+        <div class="tray-lamp" id="tray-lamp-right"></div>
+      </div>
+
+      <!-- Canvas Tray Area -->
+      <div class="tray-canvas-wrapper" id="tray-canvas-wrapper" title="可點擊收納硬幣，或拖曳硬幣投回上方投幣孔">
+        <canvas id="coin-tray-canvas"></canvas>
+      </div>
+
+      <div class="tray-bottom-bar">
+        <div class="tray-coin-info">
+          🪙 取幣槽內硬幣: <strong id="tray-coin-count">0</strong> 枚
+          <span class="tray-hint">(點擊收幣 / 可拖曳硬幣回投幣孔)</span>
+        </div>
+        <button class="btn-collect-tray-coins" id="btn-collect-tray-coins">
+          收進口袋 (Take Coins)
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Help & Rules Modal (Accessible via '?' button) -->
+  <dialog id="rules-dialog" style="background: #18110b; color: #f3f4f6; border: 3px solid #d4af37; border-radius: 12px; padding: 20px; max-width: 520px; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
+    <h2 style="color: #fbbf24; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+      <span>👑</span> 歡樂小瑪莉 機台規則說明
+    </h2>
+    <div style="font-size: 13px; line-height: 1.6; color: #d1d5db;">
+      <p><strong>1. 投幣/開分：</strong> 點擊右上方金屬投幣孔或按下 <code>C</code> 鍵投幣，每次投一枚 NT$10 拾圓硬幣，增加 NT$10 累計金額與 10 分 CREDIT。</p>
+      <p><strong>2. 押注水果：</strong> 點擊下方 8 種水果按鈕或數字鍵 <code>1~8</code> 進行押注。</p>
+      <p><strong>3. 啟動跑馬燈：</strong> 按下【啟動】或 <code>空白鍵</code>，24格跑馬燈將高速巡航並緊張遞減減速停在目標！</p>
+      <p><strong>4. 中獎結算：</strong> 停在有押注的水果即獲得 <strong>押注 × 倍率</strong> 的 BONUS WIN！</p>
+      <p><strong>5. 特殊獎勵格：</strong></p>
+      <ul style="margin-left: 20px; margin-bottom: 8px;">
+        <li><strong style="color: #E60012;">BAR (100x)：</strong> 大滿貫頭獎！觸發跑火車額外連鎖送燈！</li>
+        <li><strong style="color: #38bdf8;">送一次 (FREE SPIN)：</strong> 免費贈送一局旋轉！</li>
+        <li><strong style="color: #60a5fa;">X2 / X25 / X50：</strong> 狂暴倍數翻倍驚喜大獎！</li>
+      </ul>
+      <p><strong>6. 比大小 (比倍)：</strong> 中獎後可選擇猜【小 1~6】(<code>Z</code>) 或【大 8~13】(<code>X</code>)，猜對獎金翻倍（×2）！開出 7 則平手重來保留押分。</p>
+      <p><strong>7. 退幣吐錢：</strong> 按下【退幣】(<code>P</code>)，硬幣會以物理彈跳即時掉落底部的取幣槽！</p>
+    </div>
+    <div style="text-align: right; margin-top: 16px;">
+      <button id="btn-close-rules" style="background: #f59e0b; color: #000; border: none; padding: 6px 18px; font-weight: bold; border-radius: 6px; cursor: pointer;">關閉</button>
+    </div>
+  </dialog>
+
+  <!-- Load Scripts in Pure Offline Order -->
+  <script src="js/audio.js"></script>
+  <script src="js/coins.js"></script>
+  <script src="js/game.js"></script>
+  <script>
+    // Initialize Game & Bind Events
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialize Coin Physics Tray
+      window.coinTray = new CoinPhysicsTray('coin-tray-canvas');
+
+      // 2. Initialize Little Mary Game
+      window.littleMary.init();
+
+      // 3. Audio unlock on first user gesture
+      const unlockAudio = () => {
+        if (window.audioEngine) window.audioEngine.init();
+        window.removeEventListener('click', unlockAudio);
+        window.removeEventListener('keydown', unlockAudio);
+      };
+      window.addEventListener('click', unlockAudio);
+      window.addEventListener('keydown', unlockAudio);
+
+      // --- BUTTON EVENT BINDINGS ---
+
+      // Insert Coin (Click Slot or Quick Button)
+      const handleInsertCoin = () => {
+        if (window.littleMary) {
+          window.littleMary.registerCoinInserted(10);
+        }
+        triggerCoinInsertionAnimation(
+          'metal-coin-slot',
+          'arcade-cabinet',
+          (stepAmount) => {
+            window.littleMary.credit += stepAmount;
+            window.littleMary.updateLEDDisplays();
+          },
+          () => {
+            window.littleMary.showMessage('投幣成功！+NT$10 (CREDIT +10)', 'success');
+          }
+        );
+      };
+
+      document.getElementById('metal-coin-slot').addEventListener('click', handleInsertCoin);
+      document.getElementById('btn-insert-coin').addEventListener('click', handleInsertCoin);
+
+      // Start Button (Beside bet buttons)
+      document.getElementById('btn-start').addEventListener('click', () => {
+        window.littleMary.spin();
+      });
+
+      // Win Decision: Collect Button
+      document.getElementById('btn-collect').addEventListener('click', () => {
+        window.littleMary.collectWin();
+      });
+
+      // Win Decision: Enter Double-Up Button
+      document.getElementById('btn-enter-double').addEventListener('click', () => {
+        window.littleMary.enterDoubleUp();
+      });
+
+      // 2. COIN OUT Button: Single-click instant payout
+      document.getElementById('btn-coin-out').addEventListener('click', () => {
+        window.littleMary.handleCoinOut();
+      });
+
+      // Double-Up Choices: Small & Big (Center Arena)
+      const btnGambleSmall = document.getElementById('btn-gamble-small');
+      if (btnGambleSmall) {
+        btnGambleSmall.addEventListener('click', () => {
+          window.littleMary.pickDoubleUp('small');
+        });
+      }
+      const btnGambleBig = document.getElementById('btn-gamble-big');
+      if (btnGambleBig) {
+        btnGambleBig.addEventListener('click', () => {
+          window.littleMary.pickDoubleUp('big');
+        });
+      }
+
+      // Mirrored Double-Up Choices on Action Bar (Bottom Console)
+      const btnBarSmall = document.getElementById('btn-bar-small');
+      if (btnBarSmall) {
+        btnBarSmall.addEventListener('click', () => {
+          window.littleMary.pickDoubleUp('small');
+        });
+      }
+      const btnBarBig = document.getElementById('btn-bar-big');
+      if (btnBarBig) {
+        btnBarBig.addEventListener('click', () => {
+          window.littleMary.pickDoubleUp('big');
+        });
+      }
+
+      // Mirrored Double-Up Post-Win on Action Bar (Bottom Console)
+      const btnBarCollect = document.getElementById('btn-bar-collect');
+      if (btnBarCollect) {
+        btnBarCollect.addEventListener('click', () => {
+          window.littleMary.collectDoubleUp();
+        });
+      }
+      const btnBarContinue = document.getElementById('btn-bar-continue');
+      if (btnBarContinue) {
+        btnBarContinue.addEventListener('click', () => {
+          window.littleMary.continueDoubleUp();
+        });
+      }
+
+      // Double-Up Raise Controls: +1, +10, +Half, +All
+      const btnRaise1 = document.getElementById('btn-du-raise-1');
+      if (btnRaise1) {
+        btnRaise1.addEventListener('click', () => {
+          window.littleMary.raiseStakeFromBalance(1);
+        });
+      }
+      const btnRaise10 = document.getElementById('btn-du-raise-10');
+      if (btnRaise10) {
+        btnRaise10.addEventListener('click', () => {
+          window.littleMary.raiseStakeFromBalance(10);
+        });
+      }
+      const btnRaiseHalf = document.getElementById('btn-du-raise-half');
+      if (btnRaiseHalf) {
+        btnRaiseHalf.addEventListener('click', () => {
+          window.littleMary.raiseStakeFromBalance('half');
+        });
+      }
+      const btnRaiseAll = document.getElementById('btn-du-raise-all');
+      if (btnRaiseAll) {
+        btnRaiseAll.addEventListener('click', () => {
+          window.littleMary.raiseStakeFromBalance('all');
+        });
+      }
+
+      // Direct Collect from Double-Up Choice screen
+      const btnDuChoiceCollect = document.getElementById('btn-du-choice-collect');
+      if (btnDuChoiceCollect) {
+        btnDuChoiceCollect.addEventListener('click', () => {
+          window.littleMary.collectDoubleUp();
+        });
+      }
+
+      // Double-Up Post-Win: Collect vs Continue
+      const btnDuPostCollect = document.getElementById('btn-du-post-collect');
+      if (btnDuPostCollect) {
+        btnDuPostCollect.addEventListener('click', () => {
+          window.littleMary.collectDoubleUp();
+        });
+      }
+      const btnDuPostContinue = document.getElementById('btn-du-post-continue');
+      if (btnDuPostContinue) {
+        btnDuPostContinue.addEventListener('click', () => {
+          window.littleMary.continueDoubleUp();
+        });
+      }
+
+      // Secondary Bet Controls
+      document.getElementById('btn-bet-all').addEventListener('click', () => {
+        window.littleMary.betAll();
+      });
+      document.getElementById('btn-repeat-bet').addEventListener('click', () => {
+        window.littleMary.repeatBet();
+      });
+      document.getElementById('btn-clear-bet').addEventListener('click', () => {
+        window.littleMary.clearBets();
+      });
+
+      // Tray Pocket Collect Button
+      document.getElementById('btn-collect-tray-coins').addEventListener('click', () => {
+        const scooped = window.coinTray.takeCoins();
+        if (scooped > 0) {
+          const bankDisplay = document.getElementById('pocket-bank-display');
+          const currentBank = parseInt(bankDisplay.textContent, 10) || 0;
+          const newBank = currentBank + scooped;
+          bankDisplay.textContent = newBank;
+          document.getElementById('tray-coin-count').textContent = '0';
+          window.littleMary.showMessage(`已將 ${scooped} 枚硬幣收進口袋！累積收納 ${newBank} 枚！`, 'success');
+        } else {
+          window.littleMary.showMessage('取幣槽內目前沒有硬幣', 'info');
+        }
+      });
+
+      // Audio Mute Toggle
+      const soundBtn = document.getElementById('btn-toggle-sound');
+      soundBtn.addEventListener('click', () => {
+        const isMuted = window.audioEngine.toggleMute();
+        soundBtn.textContent = isMuted ? '🔇 聲音: 靜音' : '🔊 聲音: 開';
+      });
+
+      // CRT Scanline Toggle
+      const crtBtn = document.getElementById('btn-toggle-crt');
+      const crtOverlay = document.getElementById('crt-overlay');
+      crtBtn.addEventListener('click', () => {
+        crtOverlay.style.display = crtOverlay.style.display === 'none' ? 'block' : 'none';
+      });
+
+      // Rules Dialog
+      const rulesDialog = document.getElementById('rules-dialog');
+      document.getElementById('btn-help-modal').addEventListener('click', () => rulesDialog.showModal());
+      document.getElementById('btn-close-rules').addEventListener('click', () => rulesDialog.close());
+
+      // --- KEYBOARD SHORTCUTS ---
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || rulesDialog.open) return;
+
+        // Space: Start spin OR Continue in Double-Up
+        if (e.code === 'Space') {
+          e.preventDefault();
+          if (window.littleMary.state === 'DOUBLE_UP_WON') {
+            window.littleMary.continueDoubleUp();
+          } else if (window.littleMary.state && window.littleMary.state.startsWith('DOUBLE_UP')) {
+            // In double-up, space doesn't trigger spin
+            return;
+          } else {
+            window.littleMary.spin();
+          }
+        }
+        // C: Insert Coin
+        else if (e.key === 'c' || e.key === 'C') {
+          e.preventDefault();
+          handleInsertCoin();
+        }
+        // 1..8: Bets
+        else if (['1', '2', '3', '4', '5', '6', '7', '8'].includes(e.key)) {
+          const keys = ['bar', 'seven', 'star', 'watermelon', 'bell', 'papaya', 'orange', 'apple'];
+          const idx = parseInt(e.key, 10) - 1;
+          if (keys[idx]) {
+            window.littleMary.addBet(keys[idx]);
+          }
+        }
+        // D: Enter Double-Up
+        else if (e.key === 'd' || e.key === 'D') {
+          if (window.littleMary.state === 'WIN_DECISION') {
+            window.littleMary.enterDoubleUp();
+          }
+        }
+        // Z: Small (1-6)
+        else if (e.key === 'z' || e.key === 'Z') {
+          if (window.littleMary.state === 'DOUBLE_UP_READY') {
+            window.littleMary.pickDoubleUp('small');
+          }
+        }
+        // X: Big (8-13)
+        else if (e.key === 'x' || e.key === 'X') {
+          if (window.littleMary.state === 'DOUBLE_UP_READY') {
+            window.littleMary.pickDoubleUp('big');
+          }
+        }
+        // Enter / T: Take / Collect
+        else if (e.key === 'Enter' || e.key === 't' || e.key === 'T') {
+          if (window.littleMary.state === 'DOUBLE_UP_READY' || window.littleMary.state === 'DOUBLE_UP_WON') {
+            window.littleMary.collectDoubleUp();
+          } else {
+            window.littleMary.collectWin();
+          }
+        }
+        // P: Coin Out (Single click payout)
+        else if (e.key === 'p' || e.key === 'P') {
+          window.littleMary.handleCoinOut();
+        }
+      });
+
+      // --- MOBILE / IOS SAFARI DOUBLE-TAP & GESTURE ZOOM PREVENTION ---
+      let lastTouchEndTime = 0;
+      document.addEventListener('touchend', (e) => {
+        const currentTime = Date.now();
+        if (currentTime - lastTouchEndTime <= 300) {
+          e.preventDefault();
+          if (e.target) {
+            const clickable = e.target.closest('button, .metal-coin-slot, .slot-cell, dialog, a');
+            if (clickable) {
+              clickable.click();
+            }
+          }
+        }
+        lastTouchEndTime = currentTime;
+      }, { passive: false });
+
+      // Prevent iOS Safari pinch-to-zoom gestures
+      document.addEventListener('gesturestart', (e) => e.preventDefault());
+      document.addEventListener('gesturechange', (e) => e.preventDefault());
+      document.addEventListener('gestureend', (e) => e.preventDefault());
+
+      // Prevent double-click zoom
+      document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
+    });
+  </script>
+</body>
+</html>
